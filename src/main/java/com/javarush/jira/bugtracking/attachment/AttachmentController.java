@@ -35,7 +35,7 @@ public class AttachmentController {
         Attachment created = repository.save(attachment);
         String fileName = attachment.id() + "_" + file.getOriginalFilename();
         attachment.setFileLink(attachment.getFileLink() + fileName);
-        FileUtil.upload(file, path, fileName);
+        FileUtil.upload(created.getFileLink());
         return createdResponse(REST_URL, created);
     }
 

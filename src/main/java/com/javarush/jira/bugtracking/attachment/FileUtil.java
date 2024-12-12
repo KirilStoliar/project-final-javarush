@@ -5,7 +5,6 @@ import com.javarush.jira.common.error.NotFoundException;
 import lombok.experimental.UtilityClass;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -20,19 +19,24 @@ import java.nio.file.Paths;
 public class FileUtil {
     private static final String ATTACHMENT_PATH = "./attachments/%s/";
 
-    public static void upload(MultipartFile multipartFile, String directoryPath, String fileName) {
-        if (multipartFile.isEmpty()) {
-            throw new IllegalRequestDataException("Select a file to upload.");
-        }
-
-        File dir = new File(directoryPath);
-        if (dir.exists() || dir.mkdirs()) {
-            File file = new File(directoryPath + fileName);
-            try (OutputStream outStream = new FileOutputStream(file)) {
-                outStream.write(multipartFile.getBytes());
-            } catch (IOException ex) {
-                throw new IllegalRequestDataException("Failed to upload file" + multipartFile.getOriginalFilename());
+    public static void upload(String fileLink) {
+        Path path = Paths.get(fileLink);
+        try {
+            Resource resource = new UrlResource(path.toUri());
+            if (!Files.exists(path)) {
+                throw new NotFoundException("File not found: " + fileLink);
             }
+            File dir = new File(ATTACHMENT_PATH);
+            if (dir.exists() || dir.mkdirs()) {
+                File file = new File(getPath(path.getFileName().toString()));
+                try (OutputStream outStream = new FileOutputStream(file)) {
+                    outStream.write(resource.getInputStream().read());
+                } catch (IOException ex) {
+                    throw new IllegalRequestDataException("Failed to upload file" + resource.getFilename());
+                }
+            }
+        } catch (MalformedURLException ex) {
+            throw new NotFoundException("File" + fileLink + " not found");
         }
     }
 
