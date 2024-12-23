@@ -10,7 +10,7 @@ app:
 
 spring:
   config:
-    import: optional:file:project-final-javarush/src/main/resources/.env/
+    import: optional:file:.env/
   init:
     mode: never
   jpa:
@@ -29,11 +29,14 @@ spring:
         # https://stackoverflow.com/questions/21257819/what-is-the-difference-between-hibernate-jdbc-fetch-size-and-hibernate-jdbc-batc
         jdbc.batch_size: 20
   datasource:
-    url: jdbc:postgresql://localhost:5432/jira
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: ${POSTGRES_URL}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
   liquibase:
     changeLog: "classpath:db/changelog.sql"
+    url: ${POSTGRES_URL}
+    user: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
 
   # Jackson Fields Serialization
   jackson:
