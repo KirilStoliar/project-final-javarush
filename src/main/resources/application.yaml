@@ -34,9 +34,6 @@ spring:
     password: ${POSTGRES_PASSWORD}
   liquibase:
     changeLog: "classpath:db/changelog.sql"
-    url: ${POSTGRES_URL}
-    user: ${POSTGRES_USER}
-    password: ${POSTGRES_PASSWORD}
 
   # Jackson Fields Serialization
   jackson:

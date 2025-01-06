@@ -1,4 +1,4 @@
-version: "3.8"
+version: "3.9"
 services:
   postgres:
     image: postgres:latest
@@ -17,12 +17,16 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: app_jira
-    env_file:
-      - .env
     ports:
       - "8080:8080"
+    env_file:
+      - .env
+    environment:
+      - SPRING_DATASOURCE_URL=${POSTGRES_URL}
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
-      - /resources:/app/resources
+      - ./resources:/app/resources
     restart: no
     depends_on:
       - postgres
@@ -36,7 +40,7 @@ services:
     ports:
       - "80:80"
     volumes:
-      - /config/nginx.conf:/config
+      - ./config/nginx.conf:/config/nginx.conf
     depends_on:
       - app
 
